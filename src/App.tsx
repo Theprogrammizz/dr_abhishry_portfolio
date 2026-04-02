@@ -197,9 +197,6 @@ const Hero = () => {
               Contact Me
               <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" size={16} />
             </a>
-            <button className="border border-navy/10 text-navy px-6 md:px-10 py-3 md:py-5 text-[10px] md:text-sm uppercase tracking-widest font-bold hover:bg-navy/5 transition-all duration-300">
-              Academic Portfolio
-            </button>
           </div>
         </motion.div>
       </div>
