@@ -1,10 +1,11 @@
-import { motion } from "motion/react";
+import { motion, useInView, useMotionValue, useTransform, animate } from "motion/react";
 import { 
   Stethoscope, 
   BookOpen, 
   Award, 
   FileText, 
   ChevronRight, 
+  ChevronDown,
   MessageSquare,
   MapPin,
   Phone,
@@ -12,9 +13,11 @@ import {
   Menu,
   X,
   ExternalLink,
-  Quote
+  Quote,
+  Plus,
+  Minus
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // --- Components ---
 
@@ -29,17 +32,17 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled ? "glass-navy py-4 shadow-2xl" : "bg-transparent py-6"}`}>
+    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled ? "glass-navy py-4 shadow-2xl" : "bg-transparent md:bg-transparent py-6"}`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="flex flex-col"
         >
-          <span className={`text-2xl font-serif tracking-tight transition-colors duration-300 ${isScrolled ? "text-white" : "text-navy"}`}>
+          <span className={`text-xl md:text-2xl font-serif tracking-tight transition-colors duration-300 ${isScrolled ? "text-white" : "text-white md:text-navy"}`}>
             Dr. Abhishry Raj
           </span>
-          <span className="text-[10px] uppercase tracking-[0.3em] text-gold font-medium">
+          <span className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] text-gold font-medium">
             Gastroenterologist
           </span>
         </motion.div>
@@ -48,6 +51,8 @@ const Navbar = () => {
           {[
             { label: "About", id: "about" },
             { label: "Services", id: "services" },
+            { label: "Gallery", id: "gallery" },
+            { label: "FAQ", id: "faq" },
             { label: "Academics", id: "academics" },
             { label: "Publications", id: "publications" },
             { label: "Reviews", id: "reviews" }
@@ -83,6 +88,8 @@ const Navbar = () => {
           {[
             { label: "About", id: "about" },
             { label: "Services", id: "services" },
+            { label: "Gallery", id: "gallery" },
+            { label: "FAQ", id: "faq" },
             { label: "Academics", id: "academics" },
             { label: "Publications", id: "publications" },
             { label: "Reviews", id: "reviews" }
@@ -121,7 +128,7 @@ const Hero = () => {
       </div>
 
       {/* Content Side */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center px-6 sm:px-12 md:px-16 lg:px-24 pt-16 pb-16 md:py-24 relative bg-white flex-grow">
+      <div className="w-full md:w-1/2 flex flex-col justify-center px-6 sm:px-12 md:px-16 lg:px-24 pt-12 pb-20 md:py-24 relative bg-white flex-grow">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -129,20 +136,20 @@ const Hero = () => {
           viewport={{ once: true }}
           className="max-w-xl w-full"
         >
-          <div className="flex items-center space-x-4 mb-6">
-            <div className="h-[1px] w-8 bg-gold/50"></div>
-            <span className="text-gold uppercase tracking-[0.4em] text-[9px] md:text-xs font-bold block">
+          <div className="flex items-center space-x-4 mb-4 md:mb-6">
+            <div className="h-[1px] w-6 md:w-8 bg-gold/50"></div>
+            <span className="text-gold uppercase tracking-[0.4em] text-[8px] md:text-xs font-bold block">
               Bespoke Clinical Care
             </span>
           </div>
           
-          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl text-navy mb-6 md:mb-8 leading-[1.2] tracking-tight font-serif">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-navy mb-4 md:mb-8 leading-[1.2] tracking-tight font-serif">
             The Intersection of <br />
             <span className="italic text-gold/80">Academic Rigor</span> <br />
             and Clinical Mastery.
           </h1>
           
-          <p className="text-slate/70 text-xs sm:text-sm md:text-lg mb-8 md:mb-12 leading-relaxed max-w-md">
+          <p className="text-slate/70 text-sm md:text-lg mb-6 md:mb-12 leading-relaxed max-w-md">
             Pioneering advanced therapeutic endoscopy and evidence-based gastroenterology at SGPGI.
           </p>
           
@@ -180,6 +187,27 @@ const PrestigeStrip = () => {
       </div>
     </div>
   );
+};
+
+const Counter = ({ value, suffix = "" }: { value: number; suffix?: string }) => {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest));
+  const [displayValue, setDisplayValue] = useState(0);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    if (isInView) {
+      const controls = animate(count, value, { duration: 2, ease: "easeOut" });
+      return controls.stop;
+    }
+  }, [isInView, count, value]);
+
+  useEffect(() => {
+    return rounded.on("change", (latest) => setDisplayValue(latest));
+  }, [rounded]);
+
+  return <span ref={ref}>{displayValue}{suffix}</span>;
 };
 
 const ClinicalPhilosophy = () => {
@@ -232,16 +260,24 @@ const ClinicalPhilosophy = () => {
           </div>
           
           <div className="mt-16 grid grid-cols-3 gap-8">
-            {[
-              { label: "Specialist Year", value: "2nd" },
-              { label: "Endoscopies", value: "2k+" },
-              { label: "Publications", value: "12+" }
-            ].map((stat, idx) => (
-              <div key={idx} className="flex flex-col">
-                <span className="text-3xl font-serif text-navy mb-1">{stat.value}</span>
-                <span className="text-[10px] uppercase tracking-widest text-gold font-bold">{stat.label}</span>
-              </div>
-            ))}
+            <div className="flex flex-col">
+              <span className="text-3xl font-serif text-navy mb-1">
+                <Counter value={2} suffix="nd" />
+              </span>
+              <span className="text-[10px] uppercase tracking-widest text-gold font-bold">Specialist Year</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-3xl font-serif text-navy mb-1">
+                <Counter value={2} suffix="k+" />
+              </span>
+              <span className="text-[10px] uppercase tracking-widest text-gold font-bold">Endoscopies</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-3xl font-serif text-navy mb-1">
+                <Counter value={12} suffix="+" />
+              </span>
+              <span className="text-[10px] uppercase tracking-widest text-gold font-bold">Publications</span>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -301,6 +337,94 @@ const ClinicalExcellence = () => {
               <p className="text-gray-400 text-sm leading-relaxed">
                 {spec.desc}
               </p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const ClinicalGallery = () => {
+  const images = [
+    {
+      url: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=2080&auto=format&fit=crop",
+      title: "Advanced Endoscopy",
+      category: "Clinical"
+    },
+    {
+      url: "https://images.unsplash.com/photo-1581056771107-24ca5f033842?q=80&w=2070&auto=format&fit=crop",
+      title: "Patient Consultation",
+      category: "Practice"
+    },
+    {
+      url: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2053&auto=format&fit=crop",
+      title: "SGPGI Medical Wing",
+      category: "Institution"
+    },
+    {
+      url: "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop",
+      title: "Diagnostic Precision",
+      category: "Technology"
+    },
+    {
+      url: "https://images.unsplash.com/photo-1532187863486-abf9d39d99c5?q=80&w=2070&auto=format&fit=crop",
+      title: "Clinical Research",
+      category: "Academic"
+    },
+    {
+      url: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop",
+      title: "Collaborative Care",
+      category: "Team"
+    }
+  ];
+
+  return (
+    <section id="gallery" className="py-32 bg-slate/5">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="text-center mb-20">
+          <motion.span 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="text-gold uppercase tracking-[0.4em] text-xs font-bold mb-4 block"
+          >
+            Visual Portfolio
+          </motion.span>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-5xl text-navy font-serif"
+          >
+            Clinical Gallery
+          </motion.h2>
+          <div className="h-1 w-20 bg-gold mx-auto mt-8"></div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {images.map((image, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="group relative aspect-square overflow-hidden bg-navy"
+            >
+              <img 
+                src={image.url} 
+                alt={image.title}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute bottom-0 left-0 w-full p-8 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                <span className="text-gold text-[10px] uppercase tracking-widest mb-2 block font-bold">
+                  {image.category}
+                </span>
+                <h3 className="text-white text-xl font-serif">
+                  {image.title}
+                </h3>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -526,6 +650,88 @@ const Testimonials = () => {
                   {rev.name}
                 </span>
               </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const FAQSection = () => {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const faqs = [
+    {
+      question: "What are your primary areas of specialization?",
+      answer: "I specialize in advanced therapeutic endoscopy, inflammatory bowel disease (IBD), and complex hepatobiliary disorders. My practice at SGPGI focuses on evidence-based gastroenterology with a focus on precision diagnostics."
+    },
+    {
+      question: "How can I schedule a consultation at SGPGI?",
+      answer: "Consultations are primarily handled through the SGPGI appointment system. For academic inquiries or specific clinical guidance, you may use the contact portal on this website to reach my executive team."
+    },
+    {
+      question: "Do you offer second opinions for complex cases?",
+      answer: "Yes, I frequently provide expert second opinions for complex gastrointestinal and liver conditions. Please ensure all previous medical records and diagnostic reports are available for a comprehensive review."
+    },
+    {
+      question: "What is your approach to patient care?",
+      answer: "My philosophy is rooted in 'Bespoke Clinical Care'—treating each patient as a unique case requiring a tailored, evidence-based strategy that integrates the latest academic research with clinical mastery."
+    }
+  ];
+
+  return (
+    <section id="faq" className="py-32 bg-white">
+      <div className="max-w-4xl mx-auto px-6">
+        <div className="text-center mb-20">
+          <motion.span 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="text-gold uppercase tracking-[0.4em] text-xs font-bold mb-4 block"
+          >
+            Common Inquiries
+          </motion.span>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-5xl text-navy font-serif"
+          >
+            Frequently Asked Questions
+          </motion.h2>
+          <div className="h-1 w-20 bg-gold mx-auto mt-8"></div>
+        </div>
+
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
+            <motion.div 
+              key={index}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="border border-navy/5 rounded-lg overflow-hidden"
+            >
+              <button 
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                className="w-full flex items-center justify-between p-6 text-left bg-slate/5 hover:bg-slate/10 transition-colors"
+              >
+                <span className="text-navy font-medium md:text-lg pr-8">{faq.question}</span>
+                {openIndex === index ? (
+                  <Minus className="text-gold shrink-0" size={20} />
+                ) : (
+                  <Plus className="text-gold shrink-0" size={20} />
+                )}
+              </button>
+              {openIndex === index && (
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  className="p-6 bg-white border-t border-navy/5"
+                >
+                  <p className="text-slate/70 leading-relaxed">
+                    {faq.answer}
+                  </p>
+                </motion.div>
+              )}
             </motion.div>
           ))}
         </div>
@@ -769,8 +975,10 @@ export default function App() {
         <PrestigeStrip />
         <ClinicalPhilosophy />
         <ClinicalExcellence />
+        <ClinicalGallery />
         <AcademicCredentials />
         <AcademicLedger />
+        <FAQSection />
         <Testimonials />
         <ContactSection />
         <Affiliation />
