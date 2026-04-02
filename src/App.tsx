@@ -60,9 +60,9 @@ const Navbar = () => {
               {item.label}
             </a>
           ))}
-          <button className="bg-gold text-navy px-6 py-2.5 text-xs uppercase tracking-widest font-bold hover:bg-white transition-all duration-300 shadow-lg">
-            Consultation
-          </button>
+          <a href="#contact" className="bg-gold text-navy px-6 py-2.5 text-xs uppercase tracking-widest font-bold hover:bg-white transition-all duration-300 shadow-lg">
+            Contact
+          </a>
         </div>
 
         <button 
@@ -96,9 +96,9 @@ const Navbar = () => {
               {item.label}
             </a>
           ))}
-          <button className="bg-gold text-navy px-6 py-4 text-sm uppercase tracking-widest font-bold">
-            Executive Consultation
-          </button>
+          <a href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="bg-gold text-navy px-6 py-4 text-sm uppercase tracking-widest font-bold text-center">
+            Contact Me
+          </a>
         </motion.div>
       )}
     </nav>
@@ -107,7 +107,7 @@ const Navbar = () => {
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex flex-col md:flex-row overflow-hidden bg-white">
+    <section className="relative min-h-[110vh] md:min-h-screen flex flex-col md:flex-row overflow-hidden bg-white">
       {/* Visual Side */}
       <div className="w-full md:w-1/2 h-[50vh] md:h-screen relative overflow-hidden bg-navy">
         <img 
@@ -121,7 +121,7 @@ const Hero = () => {
       </div>
 
       {/* Content Side */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-16 lg:px-24 pt-32 pb-32 md:py-24 relative">
+      <div className="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-16 lg:px-24 pt-48 pb-32 md:py-24 relative bg-white">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -132,7 +132,7 @@ const Hero = () => {
           <span className="text-gold uppercase tracking-[0.4em] text-[10px] md:text-xs font-bold mb-6 block">
             Bespoke Clinical Care
           </span>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-navy mb-8 leading-[1.1] tracking-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-navy mb-8 leading-[1.1] tracking-tight">
             The Intersection of <br />
             <span className="italic">Academic Rigor</span> <br />
             and Clinical Mastery.
@@ -142,10 +142,10 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
-            <button className="bg-navy text-white px-8 md:px-10 py-4 md:py-5 text-xs md:text-sm uppercase tracking-widest font-bold hover:bg-gold hover:text-navy transition-all duration-500 shadow-2xl flex items-center justify-center group">
-              Executive Consultation
+            <a href="#contact" className="bg-navy text-white px-8 md:px-10 py-4 md:py-5 text-xs md:text-sm uppercase tracking-widest font-bold hover:bg-gold hover:text-navy transition-all duration-500 shadow-2xl flex items-center justify-center group">
+              Contact Me
               <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
-            </button>
+            </a>
             <button className="border border-navy/20 text-navy px-8 md:px-10 py-4 md:py-5 text-xs md:text-sm uppercase tracking-widest font-bold hover:bg-navy/5 transition-all duration-300">
               Academic Portfolio
             </button>
@@ -526,6 +526,139 @@ const Testimonials = () => {
   );
 };
 
+const ContactSection = () => {
+  const [formState, setFormState] = useState({ name: "", email: "", subject: "", message: "" });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    // Simulate form submission
+    setIsSubmitted(true);
+    setTimeout(() => setIsSubmitted(false), 5000);
+    setFormState({ name: "", email: "", subject: "", message: "" });
+  };
+
+  return (
+    <section id="contact" className="py-32 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid md:grid-cols-2 gap-20">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <span className="text-gold uppercase tracking-[0.4em] text-xs font-bold mb-6 block">
+              Get In Touch
+            </span>
+            <h2 className="text-4xl md:text-6xl text-navy mb-8 leading-tight">
+              Executive <br />
+              Contact Portal
+            </h2>
+            <p className="text-slate/70 text-lg mb-12 leading-relaxed">
+              For professional inquiries, academic collaborations, or private clinical consultations, please utilize the secure portal below.
+            </p>
+            
+            <div className="space-y-8">
+              <div className="flex items-start">
+                <div className="bg-navy p-4 text-gold mr-6">
+                  <Mail size={24} />
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase tracking-widest text-gold font-bold block mb-1">Email</span>
+                  <span className="text-navy font-medium">contact@drabhishryraj.com</span>
+                </div>
+              </div>
+              <div className="flex items-start">
+                <div className="bg-navy p-4 text-gold mr-6">
+                  <Phone size={24} />
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase tracking-widest text-gold font-bold block mb-1">Direct Line</span>
+                  <span className="text-navy font-medium">+91 (522) 266-8000</span>
+                </div>
+              </div>
+              <div className="flex items-start">
+                <div className="bg-navy p-4 text-gold mr-6">
+                  <MapPin size={24} />
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase tracking-widest text-gold font-bold block mb-1">Clinical Location</span>
+                  <span className="text-navy font-medium">Department of Gastroenterology, SGPGI, Lucknow</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="bg-white p-12 shadow-2xl border-t-8 border-gold"
+          >
+            {isSubmitted ? (
+              <div className="h-full flex flex-col justify-center items-center text-center py-20">
+                <div className="bg-gold/10 p-6 rounded-full mb-6">
+                  <ChevronRight className="text-gold rotate-90" size={48} />
+                </div>
+                <h3 className="text-2xl text-navy font-serif mb-4">Message Received</h3>
+                <p className="text-slate/60">Your inquiry has been logged. Our office will contact you shortly.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest text-navy font-bold">Full Name</label>
+                    <input 
+                      required
+                      type="text" 
+                      className="w-full bg-gray-50 border-b border-navy/10 py-3 px-4 focus:border-gold outline-none transition-colors"
+                      value={formState.name}
+                      onChange={(e) => setFormState({...formState, name: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest text-navy font-bold">Email Address</label>
+                    <input 
+                      required
+                      type="email" 
+                      className="w-full bg-gray-50 border-b border-navy/10 py-3 px-4 focus:border-gold outline-none transition-colors"
+                      value={formState.email}
+                      onChange={(e) => setFormState({...formState, email: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] uppercase tracking-widest text-navy font-bold">Subject</label>
+                  <input 
+                    required
+                    type="text" 
+                    className="w-full bg-gray-50 border-b border-navy/10 py-3 px-4 focus:border-gold outline-none transition-colors"
+                    value={formState.subject}
+                    onChange={(e) => setFormState({...formState, subject: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] uppercase tracking-widest text-navy font-bold">Message</label>
+                  <textarea 
+                    required
+                    rows={4}
+                    className="w-full bg-gray-50 border-b border-navy/10 py-3 px-4 focus:border-gold outline-none transition-colors resize-none"
+                    value={formState.message}
+                    onChange={(e) => setFormState({...formState, message: e.target.value})}
+                  ></textarea>
+                </div>
+                <button type="submit" className="w-full bg-navy text-white py-5 text-sm uppercase tracking-widest font-bold hover:bg-gold hover:text-navy transition-all duration-500 shadow-xl">
+                  Send Message
+                </button>
+              </form>
+            )}
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Affiliation = () => {
   return (
     <section className="py-24 bg-white border-y border-gray-100">
@@ -605,8 +738,7 @@ const Footer = () => {
 const ConciergeButton = () => {
   return (
     <motion.a
-      href="https://wa.me/yournumber"
-      target="_blank"
+      href="#contact"
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       whileHover={{ scale: 1.1 }}
@@ -614,7 +746,7 @@ const ConciergeButton = () => {
     >
       <MessageSquare size={24} />
       <span className="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-3 transition-all duration-500 text-xs uppercase tracking-widest font-bold whitespace-nowrap">
-        Concierge
+        Contact
       </span>
     </motion.a>
   );
@@ -631,6 +763,7 @@ export default function App() {
         <AcademicCredentials />
         <AcademicLedger />
         <Testimonials />
+        <ContactSection />
         <Affiliation />
       </main>
       <Footer />
