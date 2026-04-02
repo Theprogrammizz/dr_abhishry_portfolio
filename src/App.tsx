@@ -107,70 +107,78 @@ const Navbar = () => {
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[110vh] md:min-h-screen flex flex-col md:flex-row overflow-hidden bg-white">
+    <section className="relative min-h-screen flex flex-col md:flex-row overflow-hidden bg-white">
       {/* Visual Side */}
-      <div className="w-full md:w-1/2 h-[50vh] md:h-screen relative overflow-hidden bg-navy">
+      <div className="w-full md:w-1/2 h-[35vh] md:h-screen relative overflow-hidden bg-navy shrink-0">
         <img 
           src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=2070&auto=format&fit=crop" 
           alt="Dr. Abhishry Raj"
-          className="w-full h-full object-cover object-center opacity-80 mix-blend-luminosity"
+          className="w-full h-full object-cover object-center opacity-70 mix-blend-luminosity"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy/40 via-transparent to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-navy via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-navy/60 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent"></div>
       </div>
 
       {/* Content Side */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-16 lg:px-24 pt-48 pb-32 md:py-24 relative bg-white">
+      <div className="w-full md:w-1/2 flex flex-col justify-center px-6 sm:px-12 md:px-16 lg:px-24 pt-16 pb-16 md:py-24 relative bg-white flex-grow">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           viewport={{ once: true }}
-          className="max-w-xl"
+          className="max-w-xl w-full"
         >
-          <span className="text-gold uppercase tracking-[0.4em] text-[10px] md:text-xs font-bold mb-6 block">
-            Bespoke Clinical Care
-          </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-navy mb-8 leading-[1.1] tracking-tight">
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="h-[1px] w-8 bg-gold/50"></div>
+            <span className="text-gold uppercase tracking-[0.4em] text-[9px] md:text-xs font-bold block">
+              Bespoke Clinical Care
+            </span>
+          </div>
+          
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl text-navy mb-6 md:mb-8 leading-[1.2] tracking-tight font-serif">
             The Intersection of <br />
-            <span className="italic">Academic Rigor</span> <br />
+            <span className="italic text-gold/80">Academic Rigor</span> <br />
             and Clinical Mastery.
           </h1>
-          <p className="text-slate/70 text-base md:text-lg mb-12 leading-relaxed">
+          
+          <p className="text-slate/70 text-xs sm:text-sm md:text-lg mb-8 md:mb-12 leading-relaxed max-w-md">
             Pioneering advanced therapeutic endoscopy and evidence-based gastroenterology at SGPGI.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
-            <a href="#contact" className="bg-navy text-white px-8 md:px-10 py-4 md:py-5 text-xs md:text-sm uppercase tracking-widest font-bold hover:bg-gold hover:text-navy transition-all duration-500 shadow-2xl flex items-center justify-center group">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-6">
+            <a href="#contact" className="bg-navy text-white px-6 md:px-10 py-3 md:py-5 text-[10px] md:text-sm uppercase tracking-widest font-bold hover:bg-gold hover:text-navy transition-all duration-500 shadow-xl flex items-center justify-center group">
               Contact Me
-              <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
+              <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" size={16} />
             </a>
-            <button className="border border-navy/20 text-navy px-8 md:px-10 py-4 md:py-5 text-xs md:text-sm uppercase tracking-widest font-bold hover:bg-navy/5 transition-all duration-300">
+            <button className="border border-navy/10 text-navy px-6 md:px-10 py-3 md:py-5 text-[10px] md:text-sm uppercase tracking-widest font-bold hover:bg-navy/5 transition-all duration-300">
               Academic Portfolio
             </button>
           </div>
         </motion.div>
       </div>
+    </section>
+  );
+};
 
-      {/* Prestige Strip - Relative on mobile, absolute on desktop */}
-      <div className="md:absolute md:bottom-0 md:left-0 w-full bg-navy py-6 md:py-8 px-6 md:px-16 lg:px-24 border-t border-gold/20 z-10">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
-          <div className="flex items-center space-x-6 md:space-x-8 opacity-60 grayscale brightness-200">
-            <div className="h-8 w-8 md:h-10 md:w-10 border border-gold/40 rounded-full flex items-center justify-center text-[7px] md:text-[8px] text-gold text-center leading-tight shrink-0">
-              SGPGI<br/>CREST
-            </div>
-            <span className="text-gold text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] font-bold">
-              MBBS, MD, DM (Gastro)
-            </span>
+const PrestigeStrip = () => {
+  return (
+    <div className="w-full bg-navy py-6 md:py-8 px-6 md:px-16 lg:px-24 border-t border-gold/20">
+      <div className="max-w-7xl mx-auto flex flex-row justify-between items-center gap-4">
+        <div className="flex items-center space-x-3 sm:space-x-8 opacity-70 grayscale brightness-200">
+          <div className="h-6 w-6 md:h-10 md:w-10 border border-gold/40 rounded-full flex items-center justify-center text-[5px] md:text-[8px] text-gold text-center leading-tight shrink-0">
+            SGPGI<br/>CREST
           </div>
-          <div className="flex flex-col items-center sm:items-end">
-            <span className="text-gold text-[9px] md:text-[10px] uppercase tracking-widest mb-1">Affiliation</span>
-            <span className="text-white text-[10px] md:text-xs font-medium tracking-wide text-center sm:text-right">Sanjay Gandhi PGI, Lucknow</span>
-          </div>
+          <span className="text-gold text-[8px] sm:text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] font-bold">
+            MBBS, MD, DM (Gastro)
+          </span>
+        </div>
+        <div className="flex flex-col items-end">
+          <span className="text-gold text-[7px] md:text-[10px] uppercase tracking-widest mb-0.5">Affiliation</span>
+          <span className="text-white text-[8px] md:text-xs font-medium tracking-wide text-right">SGPGI, Lucknow</span>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
@@ -758,6 +766,7 @@ export default function App() {
       <Navbar />
       <main>
         <Hero />
+        <PrestigeStrip />
         <ClinicalPhilosophy />
         <ClinicalExcellence />
         <AcademicCredentials />
