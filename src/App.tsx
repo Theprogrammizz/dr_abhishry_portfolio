@@ -55,7 +55,7 @@ const Navbar = () => {
 
   const navItems = [
     { label: "About", id: "about", type: "section" },
-    { label: "Services", id: "services", type: "section" },
+    { label: "Expertise", id: "services", type: "section" },
     { label: "Gallery", id: "gallery", type: "section" },
     { label: "Academics", id: "academics", type: "section" },
     { label: "Testimonials", path: "/testimonials", type: "link" },
