@@ -805,10 +805,36 @@ const FAQSection = () => {
 
 const ContactSection = () => {
   const [formState, setFormState] = useState({ name: "", email: "", subject: "", message: "" });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    const newErrors: { [key: string]: string } = {};
+
+    if (!formState.name.trim()) newErrors.name = "Name is required";
+    if (!formState.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!validateEmail(formState.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    if (!formState.subject.trim()) newErrors.subject = "Subject is required";
+    if (!formState.message.trim()) newErrors.message = "Message is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
     // Simulate form submission
     setIsSubmitted(true);
     setTimeout(() => setIsSubmitted(false), 5000);
@@ -881,48 +907,60 @@ const ContactSection = () => {
                 <p className="text-slate/60">Your inquiry has been logged. Our office will contact you shortly.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase tracking-widest text-navy font-bold">Full Name</label>
                     <input 
-                      required
                       type="text" 
-                      className="w-full bg-gray-50 border-b border-navy/10 py-3 px-4 focus:border-gold outline-none transition-colors"
+                      className={`w-full bg-gray-50 border-b ${errors.name ? 'border-red-500' : 'border-navy/10'} py-3 px-4 focus:border-gold outline-none transition-colors`}
                       value={formState.name}
-                      onChange={(e) => setFormState({...formState, name: e.target.value})}
+                      onChange={(e) => {
+                        setFormState({...formState, name: e.target.value});
+                        if (errors.name) setErrors({...errors, name: ""});
+                      }}
                     />
+                    {errors.name && <p className="text-red-500 text-[10px] uppercase tracking-wider">{errors.name}</p>}
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase tracking-widest text-navy font-bold">Email Address</label>
                     <input 
-                      required
                       type="email" 
-                      className="w-full bg-gray-50 border-b border-navy/10 py-3 px-4 focus:border-gold outline-none transition-colors"
+                      className={`w-full bg-gray-50 border-b ${errors.email ? 'border-red-500' : 'border-navy/10'} py-3 px-4 focus:border-gold outline-none transition-colors`}
                       value={formState.email}
-                      onChange={(e) => setFormState({...formState, email: e.target.value})}
+                      onChange={(e) => {
+                        setFormState({...formState, email: e.target.value});
+                        if (errors.email) setErrors({...errors, email: ""});
+                      }}
                     />
+                    {errors.email && <p className="text-red-500 text-[10px] uppercase tracking-wider">{errors.email}</p>}
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-widest text-navy font-bold">Subject</label>
                   <input 
-                    required
                     type="text" 
-                    className="w-full bg-gray-50 border-b border-navy/10 py-3 px-4 focus:border-gold outline-none transition-colors"
+                    className={`w-full bg-gray-50 border-b ${errors.subject ? 'border-red-500' : 'border-navy/10'} py-3 px-4 focus:border-gold outline-none transition-colors`}
                     value={formState.subject}
-                    onChange={(e) => setFormState({...formState, subject: e.target.value})}
+                    onChange={(e) => {
+                      setFormState({...formState, subject: e.target.value});
+                      if (errors.subject) setErrors({...errors, subject: ""});
+                    }}
                   />
+                  {errors.subject && <p className="text-red-500 text-[10px] uppercase tracking-wider">{errors.subject}</p>}
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-widest text-navy font-bold">Message</label>
                   <textarea 
-                    required
                     rows={4}
-                    className="w-full bg-gray-50 border-b border-navy/10 py-3 px-4 focus:border-gold outline-none transition-colors resize-none"
+                    className={`w-full bg-gray-50 border-b ${errors.message ? 'border-red-500' : 'border-navy/10'} py-3 px-4 focus:border-gold outline-none transition-colors resize-none`}
                     value={formState.message}
-                    onChange={(e) => setFormState({...formState, message: e.target.value})}
+                    onChange={(e) => {
+                      setFormState({...formState, message: e.target.value});
+                      if (errors.message) setErrors({...errors, message: ""});
+                    }}
                   ></textarea>
+                  {errors.message && <p className="text-red-500 text-[10px] uppercase tracking-wider">{errors.message}</p>}
                 </div>
                 <button type="submit" className="w-full bg-navy text-white py-5 text-sm uppercase tracking-widest font-bold hover:bg-gold hover:text-navy transition-all duration-500 shadow-xl">
                   Send Message
@@ -1413,6 +1451,95 @@ const TestimonialsPage = () => {
   );
 };
 
+const TrustedByLeaders = () => {
+  const navigate = useNavigate();
+  
+  const featuredReviews = [
+    {
+      quote: "Dr. Raj's approach is clinical mastery combined with an executive level of communication. He treats the patient, not just the diagnosis.",
+      role: "SENIOR PARTNER, NATIONAL LAW FIRM"
+    },
+    {
+      quote: "The precision of his intervention saved months of recovery. A true asset to the medical fraternity at SGPGI.",
+      role: "OFFICE OF THE DGP, UTTAR PRADESH"
+    },
+    {
+      quote: "His academic contributions to hepatology are matched only by his surgical dexterity. A leader in the field.",
+      role: "DIRECTOR, QUATERNARY CARE CENTER"
+    }
+  ];
+
+  return (
+    <section id="reviews" className="py-32 bg-navy relative overflow-hidden">
+      {/* Background Accents */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-10">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-gold rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-gold rounded-full blur-[120px]"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="text-center mb-24">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-5xl md:text-7xl text-white font-serif mb-6"
+          >
+            Trusted by Leaders
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-gold/60 text-lg md:text-xl tracking-widest uppercase font-light"
+          >
+            Discreet, definitive care for those who demand excellence.
+          </motion.p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8 mb-20">
+          {featuredReviews.map((review, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="bg-white/5 border border-white/10 p-10 backdrop-blur-sm flex flex-col justify-between group hover:border-gold/30 transition-all duration-500"
+            >
+              <div>
+                <Quote className="text-gold/20 mb-8 group-hover:text-gold/40 transition-colors duration-500" size={48} />
+                <p className="text-white/80 text-lg leading-relaxed italic mb-12">
+                  "{review.quote}"
+                </p>
+              </div>
+              <div>
+                <div className="h-px w-12 bg-gold/30 mb-6"></div>
+                <p className="text-gold text-[10px] uppercase tracking-[0.3em] font-bold leading-tight">
+                  {review.role}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="text-center">
+          <button 
+            onClick={() => navigate("/testimonials")}
+            className="inline-flex items-center space-x-4 text-gold group"
+          >
+            <span className="text-xs uppercase tracking-[0.4em] font-bold border-b border-gold/30 pb-1 group-hover:border-gold transition-all duration-500">
+              View All Patient Stories
+            </span>
+            <ChevronRight size={16} className="group-hover:translate-x-2 transition-transform duration-500" />
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Home = () => {
   const location = useLocation();
 
@@ -1437,6 +1564,7 @@ const Home = () => {
       <ClinicalGallery />
       <AcademicCredentials />
       <AcademicLedger />
+      <TrustedByLeaders />
       <FAQSection />
       <ContactSection />
       <Affiliation />
