@@ -32,6 +32,8 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -63,7 +65,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled || location.pathname !== "/" ? "glass-navy py-4 shadow-2xl" : "bg-transparent md:bg-transparent py-6"}`}>
+    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled || location.pathname !== "/" ? "bg-[#0a192f]/95 backdrop-blur-md py-4 shadow-2xl" : "bg-transparent md:bg-transparent py-6"}`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
@@ -72,7 +74,7 @@ const Navbar = () => {
           onClick={() => navigate("/")}
         >
           <span className={`text-xl md:text-2xl font-serif tracking-tight transition-colors duration-300 ${isScrolled || location.pathname !== "/" ? "text-white" : "text-white md:text-navy"}`}>
-            Dr. Abhishry Raj
+            Dr. Abhishrey Raj
           </span>
           <span className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] text-gold font-medium">
             Gastroenterologist
@@ -85,7 +87,7 @@ const Navbar = () => {
               <button 
                 key={item.id} 
                 onClick={() => handleNavClick(item.id!)}
-                className={`text-xs uppercase tracking-widest font-medium hover:text-gold transition-colors ${isScrolled || location.pathname !== "/" ? "text-gray-300" : "text-navy"}`}
+                className={`text-xs uppercase tracking-widest font-medium hover:text-gold transition-colors cursor-pointer ${isScrolled || location.pathname !== "/" ? "text-gray-300" : "text-navy"}`}
               >
                 {item.label}
               </button>
@@ -93,19 +95,44 @@ const Navbar = () => {
               <Link 
                 key={item.path} 
                 to={item.path!}
-                className={`text-xs uppercase tracking-widest font-medium hover:text-gold transition-colors ${isScrolled || location.pathname !== "/" ? "text-gray-300" : "text-navy"}`}
+                className={`text-xs uppercase tracking-widest font-medium hover:text-gold transition-colors cursor-pointer ${isScrolled || location.pathname !== "/" ? "text-gray-300" : "text-navy"}`}
               >
                 {item.label}
               </Link>
             )
           ))}
-          <a href="#contact" className="bg-gold text-navy px-6 py-2.5 text-xs uppercase tracking-widest font-bold hover:bg-white transition-all duration-300 shadow-lg">
-            Contact
-          </a>
+          <motion.a 
+            href="#contact" 
+            onMouseEnter={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setHoverPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+              setIsHovered(true);
+            }}
+            onMouseLeave={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setHoverPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+              setIsHovered(false);
+            }}
+            whileHover={{ y: -2 }}
+            whileTap={{ y: 2 }}
+            className="relative bg-gold text-navy px-6 py-2.5 text-xs uppercase tracking-widest font-bold rounded-xl overflow-hidden cursor-pointer shadow-[0_4px_0_0_#9A7B2C] hover:shadow-[0_6px_0_0_#9A7B2C] active:shadow-none transition-all duration-150"
+          >
+            <motion.div
+              initial={false}
+              animate={{
+                clipPath: isHovered 
+                  ? `circle(150% at ${hoverPos.x}px ${hoverPos.y}px)` 
+                  : `circle(0% at ${hoverPos.x}px ${hoverPos.y}px)`
+              }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="absolute inset-0 bg-white/40 pointer-events-none"
+            />
+            <span className="relative z-10">Contact</span>
+          </motion.a>
         </div>
 
         <button 
-          className="md:hidden text-gold"
+          className="md:hidden text-gold cursor-pointer"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -126,7 +153,7 @@ const Navbar = () => {
                 <button 
                   key={item.id} 
                   onClick={() => handleNavClick(item.id!)}
-                  className="text-white text-sm uppercase tracking-widest font-medium text-left"
+                  className="text-white text-sm uppercase tracking-widest font-medium text-left cursor-pointer"
                 >
                   {item.label}
                 </button>
@@ -135,13 +162,17 @@ const Navbar = () => {
                   key={item.path} 
                   to={item.path!}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-white text-sm uppercase tracking-widest font-medium"
+                  className="text-white text-sm uppercase tracking-widest font-medium cursor-pointer"
                 >
                   {item.label}
                 </Link>
               )
             ))}
-            <a href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="bg-gold text-navy px-6 py-4 text-sm uppercase tracking-widest font-bold text-center">
+            <a 
+              href="#contact" 
+              onClick={() => setIsMobileMenuOpen(false)} 
+              className="bg-gold text-navy px-6 py-4 text-sm uppercase tracking-widest font-bold text-center rounded-xl cursor-pointer shadow-[0_4px_0_0_#9A7B2C] active:shadow-none active:translate-y-[4px] transition-all duration-150"
+            >
               Contact Me
             </a>
           </motion.div>
@@ -158,7 +189,7 @@ const Hero = () => {
       <div className="w-full md:w-1/2 h-[35vh] md:h-screen relative overflow-hidden bg-navy shrink-0">
         <img 
           src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=2070&auto=format&fit=crop" 
-          alt="Dr. Abhishry Raj"
+          alt="Dr. Abhishrey Raj"
           className="w-full h-full object-cover object-center opacity-70 mix-blend-luminosity"
           referrerPolicy="no-referrer"
         />
@@ -193,7 +224,10 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-3 md:gap-6">
-            <a href="#contact" className="bg-navy text-white px-6 md:px-10 py-3 md:py-5 text-[10px] md:text-sm uppercase tracking-widest font-bold hover:bg-gold hover:text-navy transition-all duration-500 shadow-xl flex items-center justify-center group">
+            <a 
+              href="#contact" 
+              className="bg-navy text-white px-6 md:px-10 py-3 md:py-5 text-[10px] md:text-sm uppercase tracking-widest font-bold hover:bg-gold hover:text-navy transition-all duration-500 shadow-[0_4px_0_0_#050C16] hover:shadow-[0_6px_0_0_#050C16] active:shadow-none active:translate-y-[4px] flex items-center justify-center group rounded-xl cursor-pointer"
+            >
               Contact Me
               <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" size={16} />
             </a>
@@ -230,11 +264,11 @@ const Counter = ({ value, suffix = "" }: { value: number; suffix?: string }) => 
   const rounded = useTransform(count, (latest) => Math.round(latest));
   const [displayValue, setDisplayValue] = useState(0);
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
 
   useEffect(() => {
     if (isInView) {
-      const controls = animate(count, value, { duration: 2, ease: "easeOut" });
+      const controls = animate(count, value, { duration: 1.2, ease: "easeOut" });
       return controls.stop;
     }
   }, [isInView, count, value]);
@@ -582,7 +616,7 @@ const AcademicCredentials = () => {
           <span className="text-gold uppercase tracking-[0.4em] text-xs font-bold mb-6 block">
             Academic Foundation
           </span>
-          <h2 className="text-4xl md:text-6xl text-navy mb-6">Qualifications & Credentials</h2>
+          <h2 className="text-3xl md:text-5xl text-navy mb-6">Qualifications</h2>
           <div className="w-24 h-1 bg-gold mx-auto"></div>
         </div>
 
@@ -986,7 +1020,7 @@ const Affiliation = () => {
         </div>
         <h2 className="text-2xl text-navy font-serif mb-6 italic">Statement of Affiliation</h2>
         <p className="text-slate/60 leading-relaxed">
-          Dr. Abhishry Raj serves as a Specialist member at the Sanjay Gandhi Post Graduate Institute of Medical Sciences (SGPGI), Lucknow. As a premier quaternary care center, SGPGI represents the pinnacle of medical research and clinical excellence in India. Consultations are conducted with the exclusivity and rigor inherent to this institution.
+          Dr. Abhishrey Raj serves as a Specialist member at the Sanjay Gandhi Post Graduate Institute of Medical Sciences (SGPGI), Lucknow. As a premier quaternary care center, SGPGI represents the pinnacle of medical research and clinical excellence in India. Consultations are conducted with the exclusivity and rigor inherent to this institution.
         </p>
       </div>
     </section>
@@ -999,7 +1033,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-4 gap-16 mb-24">
           <div className="col-span-2">
-            <span className="text-2xl font-serif text-gold block mb-4">Dr. Abhishry Raj</span>
+            <span className="text-2xl font-serif text-gold block mb-4">Dr. Abhishrey Raj</span>
             <p className="text-gray-400 max-w-sm text-sm leading-relaxed mb-8">
               Redefining gastroenterology through academic excellence and precision intervention at SGPGI.
             </p>
@@ -1039,7 +1073,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-white/10 pt-12 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] uppercase tracking-widest text-gray-500 font-bold">
-          <span>&copy; 2026 Dr. Abhishry Raj. All Rights Reserved.</span>
+          <span>&copy; 2026 Dr. Abhishrey Raj. All Rights Reserved.</span>
           <div className="flex space-x-8">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
@@ -1310,10 +1344,115 @@ const TestimonialForm = () => {
   );
 };
 
+const FloatingPatient = ({ patient, quote, role, image, position }: { patient: string; quote: string; role: string; image: string; position: { top: string; left: string }; key?: number }) => {
+  const isLeft = parseInt(position.left) < 30;
+  const isRight = parseInt(position.left) > 70;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ 
+        duration: 0.8, 
+        delay: Math.random() * 1.5,
+        ease: "easeOut"
+      }}
+      className="absolute group hidden lg:block pointer-events-auto"
+      style={{ 
+        top: position.top, 
+        left: position.left,
+        zIndex: 20
+      }}
+      whileHover={{ zIndex: 50 }}
+    >
+      <div className="relative">
+        {/* Profile Pic */}
+        <motion.div 
+          animate={{ 
+            y: [0, -15, 0],
+            rotate: [0, 2, -2, 0]
+          }}
+          transition={{
+            duration: 5 + Math.random() * 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="w-16 h-16 rounded-full border-4 border-white shadow-2xl overflow-hidden cursor-pointer hover:scale-110 transition-transform duration-500 ring-1 ring-gold/20"
+        >
+          <img src={image} alt={patient} className="w-full h-full object-cover" />
+        </motion.div>
+
+        {/* Popup Testimonial */}
+        <div className={`absolute bottom-full mb-6 w-72 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-500 translate-y-4 group-hover:translate-y-0 z-50
+          ${isLeft ? 'left-0' : isRight ? 'right-0' : 'left-1/2 -translate-x-1/2'}`}
+        >
+          <div className="bg-white p-6 rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.25)] border border-gold/10 relative">
+            <Quote className="text-gold/20 absolute top-4 right-4" size={24} />
+            <p className="text-navy text-sm italic leading-relaxed mb-4 relative z-10">"{quote}"</p>
+            <div className="flex flex-col border-t border-gold/10 pt-3">
+              <span className="text-navy font-bold text-xs">{patient}</span>
+              <span className="text-gold text-[10px] uppercase tracking-widest font-medium">{role}</span>
+            </div>
+            {/* Arrow */}
+            <div className={`absolute top-full w-4 h-4 bg-white border-r border-b border-gold/10 rotate-45 -mt-2
+              ${isLeft ? 'left-6' : isRight ? 'right-6' : 'left-1/2 -translate-x-1/2'}`}
+            ></div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 const TestimonialsPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const floatingPatients = [
+    {
+      patient: "Dr. Priya Singh",
+      role: "Resident Colleague",
+      quote: "A brilliant mind and a great team player. His contribution to our department's research projects has been invaluable.",
+      image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?q=80&w=1974&auto=format&fit=crop",
+      position: { top: "0%", left: "10%" }
+    },
+    {
+      patient: "Amit Khanna",
+      role: "Patient",
+      quote: "The care I received was exceptional. Dr. Raj explained everything so clearly and the recovery was faster than expected.",
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974&auto=format&fit=crop",
+      position: { top: "5%", left: "85%" }
+    },
+    {
+      patient: "Suman Lata",
+      role: "Patient",
+      quote: "Highly recommended for any gastric issues. Very professional and empathetic approach throughout the treatment.",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop",
+      position: { top: "40%", left: "5%" }
+    },
+    {
+      patient: "Vikram Seth",
+      role: "Patient",
+      quote: "Best doctor in Lucknow. Very patient and knowledgeable. He really takes the time to listen to your concerns.",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop",
+      position: { top: "45%", left: "88%" }
+    },
+    {
+      patient: "Anjali Rao",
+      role: "Patient",
+      quote: "The recovery was smooth thanks to the precise diagnosis and the follow-up care provided by Dr. Raj.",
+      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976&auto=format&fit=crop",
+      position: { top: "80%", left: "15%" }
+    },
+    {
+      patient: "Rajesh Mehra",
+      role: "Patient",
+      quote: "Dr. Raj's expertise in endoscopy is unmatched. I felt completely at ease during the entire procedure.",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop",
+      position: { top: "85%", left: "80%" }
+    }
+  ];
 
   const reviews = [
     {
@@ -1371,25 +1510,41 @@ const TestimonialsPage = () => {
   return (
     <div className="pt-32 pb-32 bg-white min-h-screen">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-24">
-          <motion.span 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-gold uppercase tracking-[0.4em] text-xs font-bold mb-4 block"
-          >
-            Patient Voices
-          </motion.span>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl text-navy font-serif mb-8"
-          >
-            Testimonials
-          </motion.h1>
-          <p className="text-slate/60 max-w-2xl mx-auto text-lg leading-relaxed">
-            Real stories of recovery and clinical excellence from patients who have experienced Dr. Abhishry Raj's bespoke care.
-          </p>
-          <div className="h-1 w-20 bg-gold mx-auto mt-12"></div>
+        <div className="text-center mb-24 relative">
+          {/* Floating Patients - Limited to Header Area */}
+          <div className="absolute inset-0 -mx-6 pointer-events-none overflow-visible">
+            {floatingPatients.map((p, i) => (
+              <FloatingPatient 
+                key={i} 
+                patient={p.patient}
+                quote={p.quote}
+                role={p.role}
+                image={p.image}
+                position={p.position}
+              />
+            ))}
+          </div>
+
+          <div className="relative z-10 pointer-events-auto">
+            <motion.span 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-gold uppercase tracking-[0.4em] text-xs font-bold mb-4 block"
+            >
+              Patient Voices
+            </motion.span>
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-5xl md:text-7xl text-navy font-serif mb-8"
+            >
+              Testimonials
+            </motion.h1>
+            <p className="text-slate/60 max-w-2xl mx-auto text-lg leading-relaxed">
+              Real stories of recovery and clinical excellence from patients who have experienced Dr. Abhishrey Raj's bespoke care.
+            </p>
+            <div className="h-1 w-20 bg-gold mx-auto mt-12"></div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-32">
